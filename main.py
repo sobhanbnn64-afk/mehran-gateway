@@ -5,6 +5,7 @@ from datetime import datetime, timezone, timedelta
 from urllib.parse import quote
 
 from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 import qrcode
@@ -12,6 +13,7 @@ from io import BytesIO
 
 
 app = FastAPI(title="Mehran Gateway")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
