@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mehran Gateway</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+<body>
+
+<header>
+
+    <div>
+
+        <strong>
+            Mehran Gateway
+        </strong>
+
+        <small>
+            پنل مدیریت
+        </small>
+
+    </div>
+
+    <a href="/logout">
+        خروج
+    </a>
+
+</header>
+
+
+<main>
+
+
+<section class="stats">
+
+    <div>
+
+        <b>
+            {{ configs|length }}
+        </b>
+
+        <span>
+            کانفیگ‌ها
+        </span>
+
+    </div>
+
+
+    <div>
+
+        <b>
+            {{ domain or "تنظیم نشده" }}
+        </b>
+
+        <span>
+            دامنه
+        </span>
+
+    </div>
+
+</section>
+
+
+<section class="card">
+
+    <h2>
+        ساخت کانفیگ
+    </h2>
+
+
+    <form
+        method="post"
+        action="/configs"
+        class="grid"
+    >
+
+
+        <input
+            name="name"
+            placeholder="نام کانفیگ"
+            required
+        >
+
+
+        <input
+            name="server"
+            placeholder="دامنه یا IP سرور"
+            value="{{ domain }}"
+            required
+        >
+
+
+        <input
+            name="port"
+            type="number"
+            value="443"
+            min="1"
+            max="65535"
+        >
+
+
+        <input
+            name="uuid_value"
+            placeholder="UUID — خالی = خودکار"
+        >
+
+
+        <input
+            name="path"
+            value="/"
+            placeholder="WebSocket Path"
+        >
+
+
+        <input
+            name="host"
+            placeholder="Host"
+        >
+
+
+        <input
+            name="sni"
+            placeholder="SNI"
+        >
+
+
+        <select name="security">
+
+            <option value="tls">
+                TLS
+            </option>
+
+            <option value="none">
+                None
+            </option>
+
+        </select>
+
+
+        <input
+            name="days"
+            type="number"
+            value="30"
+            min="0"
+            placeholder="اعتبار به روز"
+        >
+
+
+        <button
+            class="primary"
+            type="submit"
+        >
+            ساخت کانفیگ
+        </button>
+
+
+    </form>
+
+</section>
+
+
+<section class="card">
+
+    <h2>
+        کانفیگ‌ها
+    </h2>
+
+
+    {% if not configs %}
+
+        <p>
+            هنوز کانفیگی ساخته نشده.
+        </p>
+
+    {% endif %}
+
+
+    {% for config in configs %}
+
+
+    <div class="config">
+
+
+        <div>
+
+            <b>
+                {{ config.name }}
+            </b>
+
+            <small>
+
+                {{ config.server }}:{{ config.port }}
+
+                ·
+
+                {{ "فعال" if config.enabled else "غیرفعال" }}
+
+            </small>
+
+        </div>
+
+
+        <div class="actions">
+
+
+            <a
+                href="/config/{{ config.id }}"
+                target="_blank"
+            >
+                VLESS
+            </a>
+
+
+            <a
+                href="/sub/{{ config.id }}"
+                target="_blank"
+            >
+                SUB
+            </a>
+
+
+            <a
+                href="/qr/{{ config.id }}"
+                target="_blank"
+            >
+                QR
+            </a>
+
+
+            <form
+                method="post"
+                action="/configs/{{ config.id }}/toggle"
+            >
+
+                <button>
+
+                    {{ "خاموش" if config.enabled else "روشن" }}
+
+                </button>
+
+            </form>
+
+
+            <form
+                method="post"
+                action="/configs/{{ config.id }}/delete"
+                onsubmit="return confirm('حذف شود؟')"
+            >
+
+                <button class="danger">
+
+                    حذف
+
+                </button>
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+    {% endfor %}
+
+
+</section>
+
+
+</main>
+
+</body>
+
+</html>
